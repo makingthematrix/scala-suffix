@@ -21,6 +21,7 @@ You add a dependency to your `pom.xml` which looks somehow like this
 </dependency>
 ```
 You compile the project and you see this warning:
+```
 [WARNING] There are 1 pathException(s). The related dependencies will be ignored.
 [WARNING] Dependency: <user home>/.m2/repository/<path to jar>/your-scala-dependency_2.13/1.0.0/your-scala-dependency_2.13-1.0.0.jar
    - exception: Unable to derive module descriptor for <user home>/.m2/repository/<path to jar>/your-scala-dependency_2.13/1.0.0/your-scala-dependency_2.13-1.0.0.jar
