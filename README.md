@@ -31,4 +31,26 @@ You compile the project and you see this warning:
 ... and then when you run your program, it crashes when it tries to access the given Scala dependency.
 Paraphrasing [this answer on Stack Overflow](https://stackoverflow.com/questions/48714633/automatic-module-name-containing-number/48714979#48714979), since Java 9, Java does not recognize suffixes in modules names like `_2.13` as version numbers and treat them as integral parts of modules names. So, when your project tries to use a class from the Scala dependency, it will look for `your.scala.dependency.2.13` instead of just `your.scala.dependency`, it will fail to do it, and it will crash.
 
+### Usage
 
+Add this to the `<plugins>` section of your `pom.xml`:
+```
+<plugin>
+  <groupId>io.github.makingthematrix</groupId>
+  <artifactId>scala-suffix-maven-plugin</artifactId>
+  <version>0.0.3</version>
+  <configuration>
+    <libraries>
+      <param>your-scala-dependency</param>
+    </libraries>
+  </configuration>
+  <executions>
+    <execution>
+      <goals>
+        <goal>suffix</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+```
+where `your-scala-dependency` is a name of your Scala dependency without the version suffix (if there are more than one, just add them with more `<param>` tags).
