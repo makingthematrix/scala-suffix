@@ -53,4 +53,16 @@ Add this to the `<plugins>` section of your `pom.xml`:
   </executions>
 </plugin>
 ```
-where `your-scala-dependency` is a name of your Scala dependency without the version suffix (if there are more than one, just add them with more `<param>` tags).
+where `your-scala-dependency` is a name of your Scala dependency **without** the version suffix (if there are more than one, just add them with more `<param>` tags). This should be the same as `artifactId` in your `<dependency>` section.
+
+The plugin modifies the dependency's JAR file in your local Maven repository. It opens the jar, reads `META-INF/MANIFEST.MF` and adds to it a line:
+```
+Automatic-Module-Name: your-scala-dependency
+```
+if it is missing. If the property `Automatic-Module-Name` already exists, the plugin does nothing - we assume that in that case the dependency should already work. This prevents the plugin from modifying the same JAR file more than once. 
+
+#### Potential problems
+
+1. If `Automatic-Module-Name` already exists but is set to a value that is still invalid for Java 9+, the plugin won't fix this.
+2. The plugin changes the contents of the JAR file, but it does not update the checksum. If you check it later on, it won't match.
+3. The plugin relies on that you don't need two versions of the same Scala library for different Scala versions. If you do (but... why?) it will modify only one of them and ignore the other.
