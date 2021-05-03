@@ -1,6 +1,6 @@
 # scala-suffix Maven Plugin
 
-A Maven plugin which fixes Scala jars incompatibility with Java 9+. 
+A Maven plugin which fixes Scala dependencies incompatible with Java 9+. 
 
 ### A bit of context
 

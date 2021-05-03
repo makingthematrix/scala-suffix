@@ -57,13 +57,12 @@ public final class SufFixMojo extends AbstractMojo {
 
     public void execute() {
         final var artifacts = (Set<Artifact>)Collections.unmodifiableSet(project.getDependencyArtifacts());
-        libraries.stream().map(newLibraryName ->
+        libraries.stream().map(libraryName ->
             artifacts.stream()
-                .filter(art -> art.getArtifactId().toLowerCase().contains(newLibraryName))
+                .filter(art -> art.getArtifactId().toLowerCase().contains(libraryName))
                 .findAny()
-                .map(art -> Tuple.of(art.getFile(), newLibraryName))
-        ).filter(Optional::isPresent)
-         .map(Optional::get)
+                .map(art -> Tuple.of(art.getFile(), libraryName))
+        ).flatMap(Optional::stream)
          .forEach(this::fixManifest);
     }
 

@@ -4,7 +4,7 @@
   <groupId>io.github.makingthematrix</groupId>
   <artifactId>scala-suffix-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.0.3</version>
+  <version>0.1.0</version>
   <name>Scala SufFix Maven Plugin</name>
   <url>https://github.com/makingthematrix/scala-suffix</url>
   <organization>
@@ -12,14 +12,76 @@
     <url>https://github.com/makingthematrix</url>
   </organization>
 
+  <!-- -->
+  <description>Fixes Scala dependencies incompatible with Java 9+.</description>
+
+  <scm>
+    <connection>scm:git:https://github.com/makingthematrix/scala-suffix.git</connection>
+    <developerConnection>scm:git:https://github.com/makingthematrix/scala-suffix.git</developerConnection>
+    <url>https://github.com/github.com/makingthematrix/scala-suffix</url>
+    <tag>scala-suffix</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/makingthematrix/scala-suffix/issues</url>
+  </issueManagement>
+
+  <developers>
+    <developer>
+      <id>makingthematrix</id>
+      <name>Maciej Gorywoda</name>
+      <email>gorywodamaciej@protonmail.com</email>
+      <url>https://github.com/makingthematrix</url>
+      <organization>makingthematrix</organization>
+      <organizationUrl>https://github.com/makingthematrix</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>Europe/Berlin</timezone>
+      <properties>
+        <picUrl>https://avatars.githubusercontent.com/u/4498008?v=4</picUrl>
+      </properties>
+    </developer>
+  </developers>
+
+  <!-- -->
+
   <properties>
     <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -27,10 +89,51 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.6.1</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+
     <defaultGoal>suffix</defaultGoal>
   </build>
 

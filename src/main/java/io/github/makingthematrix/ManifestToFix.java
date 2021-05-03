@@ -33,15 +33,15 @@ final class ManifestToFix {
         this.manifestFile = new File(outputDir, MANIFEST_MF);
     }
 
-    public boolean fixLib(@NotNull String newLibraryName) throws IOException {
+    public boolean fixLib(@NotNull String libraryName) throws IOException {
         if (manifestFile.exists()) {
-            return fixManifestFile(newLibraryName);
+            return fixManifestFile(libraryName);
         } else {
             throw new IOException("No file " + manifestFile.getAbsolutePath() + " found");
         }
     }
 
-    private boolean fixManifestFile(String newLibraryName) throws IOException {
+    private boolean fixManifestFile(String libraryName) throws IOException {
         final var manifestLines = FileUtils.readLines(manifestFile, Charset.defaultCharset());
         final var moduleNameLine =
             manifestLines.stream()
@@ -52,20 +52,20 @@ final class ManifestToFix {
             return false;
         }
 
-        addAutomaticModuleName(manifestLines, newLibraryName);
+        addAutomaticModuleName(manifestLines, libraryName);
         if (!zipFile.isValidZipFile()) {
             throw new IOException("After the operation the zip file is INVALID: " + zipFile.getFile().getAbsolutePath());
         }
         return true;
     }
 
-    private void addAutomaticModuleName(List<String> manifestLines, String newLibraryName) throws IOException {
+    private void addAutomaticModuleName(List<String> manifestLines, String libraryName) throws IOException {
         final var newManifestLines =
             List.copyOf(manifestLines).stream()
                 .map(String::trim)
                 .filter(line -> !line.isBlank())
                 .collect(Collectors.toList());
-        newManifestLines.add(AUTOMATIC_MODULE_NAME + ": " + newLibraryName);
+        newManifestLines.add(AUTOMATIC_MODULE_NAME + ": " + libraryName);
 
         manifestFile.createNewFile();
         FileUtils.writeLines(manifestFile, newManifestLines);
