@@ -88,6 +88,3 @@ Compile / packageBin / packageOptions +=
   Package.ManifestAttributes("Automatic-Module-Name" -> name.value)
 ```
 (`name` here is the name of the library, without the version suffix).
-
-
-I hope you will find this plugin useful.
