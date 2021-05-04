@@ -65,6 +65,10 @@ If the property `Automatic-Module-Name` already exists, the plugin does nothing 
 
 If you find any problems or if you think some kind of an extended functionality would be valuable, feel free to open a ticket under the **Issues** tab here on GitHub. I will se what I can do.
 
+### Test
+
+Here's [a small Scala+JavaFX project, built with Maven](https://github.com/makingthematrix/scalaonandroid/tree/main/HelloFxml2), which you can use to test how the plugin works. 
+
 ### Potential problems
 
 1. If `Automatic-Module-Name` already exists but is set to a value that is still invalid for Java 9+, the plugin won't fix this.
