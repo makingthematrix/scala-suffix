@@ -55,15 +55,35 @@ public final class SufFixMojo extends AbstractMojo {
         return temp;
     });
 
-    public void execute() {
-        final var artifacts = (Set<Artifact>)Collections.unmodifiableSet(project.getDependencyArtifacts());
-        libraries.stream().map(libraryName ->
-            artifacts.stream()
-                .filter(art -> art.getArtifactId().toLowerCase().contains(libraryName))
+    final private Lazy<Set<Artifact>> artifacts =
+        Lazy.of(() -> (Set<Artifact>)Collections.unmodifiableSet(project.getDependencyArtifacts()));
+
+    private Optional<Tuple2<File, String>> findManifestToFix(String libraryName) {
+        if (libraryName.contains(":")) {
+            var split = libraryName.split(":");
+            if (split.length > 1) {
+                final var groupId = split[0].trim();
+                final var artifactId = split[1].trim();
+                return artifacts.get().stream()
+                    .filter(art -> art.getGroupId().equals(groupId) && art.getArtifactId().equals(artifactId))
+                    .findAny()
+                    .map(art -> Tuple.of(art.getFile(), libraryName));
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return artifacts.get().stream()
+                .filter(art -> art.getArtifactId().trim().equals(libraryName))
                 .findAny()
-                .map(art -> Tuple.of(art.getFile(), libraryName))
-        ).flatMap(Optional::stream)
-         .forEach(this::fixManifest);
+                .map(art -> Tuple.of(art.getFile(), libraryName));
+        }
+    }
+
+    public void execute() {
+        libraries.stream()
+                 .map(this::findManifestToFix)
+                 .flatMap(Optional::stream)
+                 .forEach(this::fixManifest);
     }
 
     private void fixManifest(Tuple2<File, String> tuple) {
