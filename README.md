@@ -40,7 +40,7 @@ Add this to the `<plugins>` section of your `pom.xml`:
 <plugin>
   <groupId>io.github.makingthematrix</groupId>
   <artifactId>scala-suffix-maven-plugin</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.1</version>
   <configuration>
     <libraries>
       <param>your-scala-dependency</param>
@@ -56,6 +56,11 @@ Add this to the `<plugins>` section of your `pom.xml`:
 </plugin>
 ```
 where `your-scala-dependency` is a name of your Scala dependency **without** the version suffix (if there are more than one, just add them with more `<param>` tags). This should be the same as `artifactId` in your `<dependency>` section.
+Or you can use:
+```
+<param>groupId:artifactId</param>
+```
+if there are more than one dependency with the same `artifactId` in your project (I noticed that `core` is a popular name).
 
 The plugin modifies the dependency's JAR file in your local Maven repository. It opens the jar, reads `META-INF/MANIFEST.MF` and adds to it a line:
 ```
@@ -89,6 +94,6 @@ Here's [a small Scala+JavaFX project, built with Maven](https://github.com/makin
 If you are a creator of a Scala library, you can simply add the `Automatic-Module-Name` property to `META-INF/MANIFEST.MF` by yourself. In most cases, people will use your library with sbt and then this won't be necessary, but it won't hurt them either, and while doing this you will help people who use Maven. In case you use sbt for building your library, all you need to do is at these two lines somewhere in your `build.sbt`:
 ```
 Compile / packageBin / packageOptions +=
-  Package.ManifestAttributes("Automatic-Module-Name" -> name.value)
+  Package.ManifestAttributes("Automatic-Module-Name" -> NAME)
 ```
-(`name` here is the name of the library, without the version suffix).
+(`NAME` here is the name of the library, without the version suffix).

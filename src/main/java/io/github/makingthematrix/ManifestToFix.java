@@ -33,7 +33,7 @@ final class ManifestToFix {
         this.manifestFile = new File(outputDir, MANIFEST_MF);
     }
 
-    public boolean fixLib(@NotNull String libraryName) throws IOException {
+    public boolean fix(@NotNull String libraryName) throws IOException {
         if (manifestFile.exists()) {
             return fixManifestFile(libraryName);
         } else {

@@ -65,15 +65,16 @@ public final class SufFixMojo extends AbstractMojo {
                 final var groupId = split[0].trim();
                 final var artifactId = split[1].trim();
                 return artifacts.get().stream()
-                    .filter(art -> art.getGroupId().equals(groupId) && art.getArtifactId().equals(artifactId))
+                    .filter(art -> art.getGroupId().toLowerCase().contains(groupId) && art.getArtifactId().toLowerCase().contains(artifactId))
                     .findAny()
                     .map(art -> Tuple.of(art.getFile(), libraryName));
             } else {
+                error("scala-suffix invalid param: " + libraryName);
                 return Optional.empty();
             }
         } else {
             return artifacts.get().stream()
-                .filter(art -> art.getArtifactId().trim().equals(libraryName))
+                .filter(art -> art.getArtifactId().trim().toLowerCase().contains(libraryName))
                 .findAny()
                 .map(art -> Tuple.of(art.getFile(), libraryName));
         }
@@ -90,8 +91,8 @@ public final class SufFixMojo extends AbstractMojo {
         clean();
         try {
             final var manifestToFix = new ManifestToFix(tuple._1, tempDir.get());
-            if (manifestToFix.fixLib(tuple._2)) {
-                info("The manifest file fixed for: " + tuple._2);
+            if (manifestToFix.fix(tuple._2)) {
+                info("scala-suffix: the manifest file fixed for: " + tuple._2);
             }
         } catch (IOException ex) {
             error(ex);
